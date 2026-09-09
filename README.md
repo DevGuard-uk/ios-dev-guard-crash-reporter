@@ -1,35 +1,65 @@
 # DevGuardCrashReporter (native iOS)
 
-Standalone crash telemetry module for native iOS apps.
+Standalone crash telemetry for native iOS apps — **not** the licensing `DevGuardSDK`.
 
-**Status:** Sources and `DevGuardCrashReporter.podspec` live in this folder for a future CocoaPods release. The pod is **not published on the CocoaPods trunk yet** (`cocoapods.org/pods/DevGuardCrashReporter` will 404 until trunk accept).
+This pod only signs and POSTs to `/api/v1/telemetry/plugin-crash` (Admin → Plugin Crashes). It does **not** provide lock screens, heartbeats, or governance.
 
-## Recommended path today
+**Status:** Sources + `DevGuardCrashReporter.podspec` in this repo. Not on CocoaPods trunk yet.
 
-Use **`DevGuardSDK`** — built-in plugin crash telemetry ships with the main licensing pod:
-
-```ruby
-pod 'DevGuardSDK', '~> 1.0'
-```
-
-Public repo: [github.com/DevGuard-uk/ios-dev-guard-sdk](https://github.com/DevGuard-uk/ios-dev-guard-sdk)
-
-## Standalone (from git, pre-trunk)
-
-When you need the module without the full licensing SDK:
+## Install (crash-only)
 
 ```ruby
 pod 'DevGuardCrashReporter', :git => 'https://github.com/DevGuard-uk/ios-dev-guard-crash-reporter.git', :tag => 'v1.0.0'
 ```
 
 ```swift
+// projectId + secret authenticate the crash API (same portal credentials).
+// They do not pull in DevGuardSDK.
 PluginCrashReporter.configure(
     projectId: "your_project_id",
     secret: "YOUR_MASTER_SECRET"
 )
+
+PluginCrashReporter.report(
+    error: NSError(domain: "App", code: 1, userInfo: [
+        NSLocalizedDescriptionKey: "Something failed",
+    ]),
+    context: "my_feature",
+    crashType: "sdk_internal"
+)
 ```
+
+## Why credentials?
+
+| Value | Used for |
+|-------|----------|
+| `projectId` | Attribute the crash to your portal project |
+| `secret` (master secret) | `X-DevGuard-Api-Key` + HMAC headers on the telemetry POST |
+
+No licensing SDK install is required.
+
+## Host-app UX
+
+`PluginCrashReporter.report` is fire-and-forget. Capture message / context / type in your UI (or logs) so developers can copy or forward the text:
+
+```swift
+let message = "Something failed"
+PluginCrashReporter.report(
+    error: NSError(domain: "App", code: 1, userInfo: [
+        NSLocalizedDescriptionKey: message,
+    ]),
+    context: "my_feature",
+    crashType: "sdk_internal"
+)
+// Show on screen, e.g.:
+// lastCrashText = "message: \(message)\ncontext: my_feature\ntype: sdk_internal"
+```
+
+## Already using `DevGuardSDK`?
+
+The main licensing pod already includes built-in crash telemetry. Prefer that path if you already depend on `DevGuardSDK` — do not add this pod twice.
 
 ## Support
 
-- **Issues:** prefer the main SDK issues tracker until the crash-only GitHub remote is published
+- **Issues:** [github.com/DevGuard-uk/ios-dev-guard-crash-reporter](https://github.com/DevGuard-uk/ios-dev-guard-crash-reporter)
 - **Docs:** [devguard.uk/docs](https://devguard.uk/docs)
