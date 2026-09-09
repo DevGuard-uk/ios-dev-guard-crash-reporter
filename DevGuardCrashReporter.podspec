@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
   s.name             = 'DevGuardCrashReporter'
   s.version          = '1.0.0'
-  s.summary          = 'DevGuard plugin crash telemetry for native iOS apps.'
-  s.description      = 'Standalone fire-and-forget crash telemetry to DevGuard Admin (plugin-crash). Not the licensing DevGuardSDK; optional projectId + master secret only authenticate the crash API.'
+  s.summary          = 'Standalone crash logging plugin for native iOS apps.'
+  s.description      = 'Fire-and-forget crash telemetry to Admin (plugin-crash). Optional projectId + master secret authenticate the crash API.'
   s.homepage         = 'https://github.com/DevGuard-uk/ios-dev-guard-crash-reporter'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'DevGuard UK' => 'support@devguard.uk' }

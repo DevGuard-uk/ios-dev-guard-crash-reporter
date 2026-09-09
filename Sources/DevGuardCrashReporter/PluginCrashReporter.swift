@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-private func devguardPluginUncaughtHandler(_ exception: NSException) {
+private func pluginUncaughtHandler(_ exception: NSException) {
     let error = NSError(
         domain: exception.name.rawValue,
         code: 0,
@@ -21,8 +21,7 @@ private func devguardPluginUncaughtHandler(_ exception: NSException) {
 
 public typealias PluginCrashMetadataProvider = () async -> [String: Any]?
 
-/// Fire-and-forget plugin crash telemetry to the DevGuard API.
-/// Publishable separately as the `DevGuardCrashReporter` CocoaPod.
+/// Fire-and-forget plugin crash telemetry.
 public enum PluginCrashReporter {
     private static var projectId: String?
     private static var secret: String?
@@ -108,7 +107,7 @@ public enum PluginCrashReporter {
 
     private static func registerUncaughtHandler() {
         uncaughtHandlerInstalled = true
-        NSSetUncaughtExceptionHandler(devguardPluginUncaughtHandler)
+        NSSetUncaughtExceptionHandler(pluginUncaughtHandler)
     }
 
     private static func telemetryUrl() -> String {

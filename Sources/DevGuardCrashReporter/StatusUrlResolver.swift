@@ -4,7 +4,7 @@ enum StatusUrlResolver {
     static var defaultApiURL: String { CrashNativeBridge.defaultStatusUrl() }
 
     private static let invalidMessage =
-        "DevGuard Security Alert: statusUrl must be an HTTPS endpoint on the devguard.uk domain."
+        "statusUrl must be an HTTPS endpoint on the allowed API host."
 
     static func resolve(_ statusUrl: String?) throws -> String {
         let candidate: String
@@ -16,7 +16,7 @@ enum StatusUrlResolver {
 
         guard isAllowed(candidate) else {
             throw NSError(
-                domain: "DevGuard",
+                domain: "CrashReporter",
                 code: 403,
                 userInfo: [NSLocalizedDescriptionKey: invalidMessage]
             )

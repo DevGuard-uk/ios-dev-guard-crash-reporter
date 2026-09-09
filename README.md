@@ -1,20 +1,16 @@
-# DevGuardCrashReporter (native iOS)
+# iOS Crash Reporter
 
-Standalone crash telemetry for native iOS apps — **not** the licensing `DevGuardSDK`.
+Standalone iOS crash logging plugin. Signs and POSTs crash reports to `/api/v1/telemetry/plugin-crash` (Admin → Plugin Crashes).
 
-This pod only signs and POSTs to `/api/v1/telemetry/plugin-crash` (Admin → Plugin Crashes). It does **not** provide lock screens, heartbeats, or governance.
+**Status:** Sources + CocoaPod in this repo. Not on CocoaPods trunk yet.
 
-**Status:** Sources + `DevGuardCrashReporter.podspec` in this repo. Not on CocoaPods trunk yet.
-
-## Install (crash-only)
+## Install
 
 ```ruby
 pod 'DevGuardCrashReporter', :git => 'https://github.com/DevGuard-uk/ios-dev-guard-crash-reporter.git', :tag => 'v1.0.0'
 ```
 
 ```swift
-// projectId + secret authenticate the crash API (same portal credentials).
-// They do not pull in DevGuardSDK.
 PluginCrashReporter.configure(
     projectId: "your_project_id",
     secret: "YOUR_MASTER_SECRET"
@@ -29,14 +25,14 @@ PluginCrashReporter.report(
 )
 ```
 
-## Why credentials?
+## Credentials
 
 | Value | Used for |
 |-------|----------|
 | `projectId` | Attribute the crash to your portal project |
-| `secret` (master secret) | `X-DevGuard-Api-Key` + HMAC headers on the telemetry POST |
+| `secret` (master secret) | API key header + HMAC on the telemetry POST |
 
-No licensing SDK install is required.
+Both are optional API auth for remote triage. Use placeholders in committed samples.
 
 ## Host-app UX
 
@@ -55,11 +51,6 @@ PluginCrashReporter.report(
 // lastCrashText = "message: \(message)\ncontext: my_feature\ntype: sdk_internal"
 ```
 
-## Already using `DevGuardSDK`?
-
-The main licensing pod already includes built-in crash telemetry. Prefer that path if you already depend on `DevGuardSDK` — do not add this pod twice.
-
 ## Support
 
 - **Issues:** [github.com/DevGuard-uk/ios-dev-guard-crash-reporter](https://github.com/DevGuard-uk/ios-dev-guard-crash-reporter)
-- **Docs:** [devguard.uk/docs](https://devguard.uk/docs)
